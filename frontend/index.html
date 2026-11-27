@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tensor</title>
+
+    <link rel="stylesheet" href="/frontend/css/styles.css" />
+    <link rel="stylesheet" href="/frontend/css/components.css" />
+    <link rel="stylesheet" href="/frontend/css/dashboard.css" />
+    <link rel="stylesheet" href="/frontend/css/optimizer.css" />
+    <link rel="stylesheet" href="/frontend/css/results.css" />
+    <link rel="stylesheet" href="/frontend/css/responsive.css" />
+</head>
+<body>
+
+<div class="app-shell">
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-mark">T</span>
+            <div>
+                <span class="brand-name">Tensor</span>
+                <span class="brand-tagline">Prompt optimization agent</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main navigation">
+            <a href="#dashboard" class="nav-item" data-page="dashboard">Dashboard</a>
+            <a href="#optimize" class="nav-item" data-page="optimize">Optimize Prompt</a>
+            <a href="#history" class="nav-item" data-page="history">Prompt History</a>
+            <a href="#roles" class="nav-item" data-page="roles">Roles</a>
+            <a href="#models" class="nav-item" data-page="models">Models</a>
+            <a href="#settings" class="nav-item" data-page="settings">Settings</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="sidebar-footer-label">Backend</span>
+            <span id="health-status" class="status-pill">Checking...</span>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+
+        <header class="topbar">
+            <button class="menu-toggle" id="menu-toggle" type="button"
+                    aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+                <span class="menu-icon" aria-hidden="true"></span>
+            </button>
+            <h2 class="topbar-title" id="page-title">Dashboard</h2>
+            <a href="#optimize" class="btn btn-primary btn-small topbar-action">New optimization</a>
+        </header>
+
+        <main class="main-content">
+
+            <!-- DASHBOARD -->
+            <section class="page" id="page-dashboard" data-page="dashboard" aria-labelledby="dashboard-heading">
+                <div class="card welcome-card">
+                    <div class="welcome-text">
+                        <h1 id="dashboard-heading">Welcome to Tensor</h1>
+                        <p class="lead">Turn ordinary instructions into structured, role-aware professional prompts.</p>
+                        <p class="muted">
+                            Choose a professional role, describe your task, and receive an optimized prompt
+                            with a transparent quality assessment.
+                        </p>
+                    </div>
+                    <div class="welcome-actions">
+                        <a href="#optimize" class="btn btn-primary">Optimize a prompt</a>
+                        <a href="#history" class="btn btn-secondary">View history</a>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <article class="card quick-action">
+                        <h2>Quick optimization</h2>
+                        <p class="muted">Choose a role, a task, and your original instruction on the optimizer page.</p>
+                        <a href="#optimize" class="btn btn-primary">Start optimization</a>
+                    </article>
+
+                    <article class="card">
+                        <h2>Recent activity</h2>
+                        <p class="muted">Open <a href="#history" class="text-link">Prompt History</a> to see saved optimizations.</p>
+                    </article>
+                </div>
+
+                <h2 class="section-title">Professional roles</h2>
+                <div class="roles-grid">
+                    <article class="card role-card">
+                        <h3>Data Analyst</h3>
+                        <p class="muted">Data cleaning, SQL, visualization, statistics, and reporting.</p>
+                        <a href="#roles" class="text-link">View tasks</a>
+                    </article>
+                    <article class="card role-card">
+                        <h3>Software Developer</h3>
+                        <p class="muted">Frontend, backend, debugging, architecture, and API work.</p>
+                        <a href="#roles" class="text-link">View tasks</a>
+                    </article>
+                </div>
+            </section>
+
+            <!-- OPTIMIZE -->
+            <section class="page" id="page-optimize" data-page="optimize" aria-labelledby="optimize-heading">
+                <div class="page-header">
+                    <h1 id="optimize-heading">Optimize Prompt</h1>
+                    <p class="muted">Choose a role, describe your task, and generate an optimized prompt.</p>
+                </div>
+
+                <form id="optimizer-form" class="card optimizer-form" novalidate>
+
+                    <div id="form-notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+                    <fieldset class="form-section">
+                        <legend>1. Role and task</legend>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label for="role-select">
+                                    Professional role <span class="required" aria-hidden="true">*</span>
+                                </label>
+                                <select id="role-select" name="role" class="form-control" required
+                                        aria-describedby="error-role"></select>
+                                <p id="error-role" class="field-error" hidden></p>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="task-select">
+                                    Task category <span class="required" aria-hidden="true">*</span>
+                                </label>
+                                <select id="task-select" name="task" class="form-control" required disabled
+                                        aria-describedby="task-hint error-task"></select>
+                                <p id="task-hint" class="field-hint">Task options depend on the selected role.</p>
+                                <p id="error-task" class="field-error" hidden></p>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="form-section">
+                        <legend>2. Your instruction</legend>
+
+                        <div class="form-field">
+                            <div class="field-label-row">
+                                <label for="original-prompt">
+                                    Original prompt <span class="required" aria-hidden="true">*</span>
+                                </label>
+                                <span id="count-original-prompt" class="char-count">0 / 4000</span>
+                            </div>
+                            <textarea id="original-prompt" class="form-control form-textarea" rows="5"
+                                      placeholder="Example: Clean this sales CSV and tell me which regions have missing data."
+                                      aria-describedby="hint-original-prompt error-original-prompt"></textarea>
+                            <p id="hint-original-prompt" class="field-hint">
+                                Write the instruction the way you would ask it today. At least 10 characters are needed.
+                            </p>
+                            <p id="error-original-prompt" class="field-error" hidden></p>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <div class="field-label-row">
+                                    <label for="additional-context">Additional context <span class="muted">(optional)</span></label>
+                                    <span id="count-additional-context" class="char-count">0 / 1500</span>
+                                </div>
+                                <textarea id="additional-context" class="form-control form-textarea" rows="4"
+                                          placeholder="Example: The dataset has 12 columns and is stored in PostgreSQL."
+                                          aria-describedby="error-additional-context"></textarea>
+                                <p id="error-additional-context" class="field-error" hidden></p>
+                            </div>
+
+                            <div class="form-field">
+                                <div class="field-label-row">
+                                    <label for="constraints">Constraints <span class="muted">(optional)</span></label>
+                                    <span id="count-constraints" class="char-count">0 / 1000</span>
+                                </div>
+                                <textarea id="constraints" class="form-control form-textarea" rows="4"
+                                          placeholder="Example: Use only the standard library. Keep the answer under 300 words."
+                                          aria-describedby="error-constraints"></textarea>
+                                <p id="error-constraints" class="field-error" hidden></p>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="form-section">
+                        <legend>3. Output and target model</legend>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label for="output-format">
+                                    Expected output format <span class="required" aria-hidden="true">*</span>
+                                </label>
+                                <select id="output-format" name="outputFormat" class="form-control" required
+                                        aria-describedby="error-output-format">
+                                    <option value="" selected>Select an output format</option>
+                                    <option value="markdown">Structured Markdown</option>
+                                    <option value="bullets">Bulleted list</option>
+                                    <option value="steps">Numbered steps</option>
+                                    <option value="table">Table</option>
+                                    <option value="json">JSON</option>
+                                    <option value="code">Code with explanation</option>
+                                    <option value="report">Report with sections</option>
+                                    <option value="text">Plain text</option>
+                                </select>
+                                <p id="error-output-format" class="field-error" hidden></p>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="target-model">
+                                    Target LLM <span class="required" aria-hidden="true">*</span>
+                                </label>
+                                <select id="target-model" name="targetModel" class="form-control" required
+                                        aria-describedby="error-target-model target-model-hint">
+                                    <option value="generic" selected>General purpose</option>
+                                    <option value="gemini">Google Gemini</option>
+                                </select>
+                                <p id="target-model-hint" class="field-hint">
+                                    Uses the provider configured in backend/.env. See the Models page for status.
+                                </p>
+                                <p id="error-target-model" class="field-error" hidden></p>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="form-section">
+                        <legend>4. Optimization level</legend>
+                        <div id="optimization-level-group" class="radio-group" role="radiogroup"
+                             aria-describedby="error-optimization-level">
+                            <label class="radio-card">
+                                <input type="radio" name="optimizationLevel" value="light" />
+                                <span class="radio-title">Light</span>
+                                <span class="radio-desc">Clarify wording with minimal structural change.</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="optimizationLevel" value="standard" checked />
+                                <span class="radio-title">Standard</span>
+                                <span class="radio-desc">Balanced improvements. Recommended for most prompts.</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="optimizationLevel" value="deep" />
+                                <span class="radio-title">Deep</span>
+                                <span class="radio-desc">Full restructuring with stricter validation criteria.</span>
+                            </label>
+                        </div>
+                        <p id="error-optimization-level" class="field-error" hidden></p>
+                    </fieldset>
+
+                    <details id="payload-preview-wrap" class="payload-preview" hidden>
+                        <summary>Request body sent to POST /api/optimize</summary>
+                        <pre id="payload-preview"></pre>
+                    </details>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="clear-form">Clear form</button>
+                        <button type="submit" class="btn btn-primary" id="optimize-submit">
+                            <span class="btn-spinner" aria-hidden="true"></span>
+                            <span class="btn-label">Optimize Prompt</span>
+                        </button>
+                    </div>
+                </form>
+
+                <section id="results-panel" class="results-panel" aria-label="Optimization result" hidden>
+
+                    <div id="results-loading" class="card results-state results-loading-card" role="status" hidden>
+                        <div class="orb" aria-hidden="true">
+                            <span class="orb-ring"></span>
+                            <span class="orb-core"></span>
+                        </div>
+                        <div class="orb-text">
+                            <p class="orb-label"><span id="orb-label">Thinking</span><span class="orb-dots" aria-hidden="true"><i></i><i></i><i></i></span></p>
+                            <p class="muted">Refinement can take up to a minute or two.</p>
+                        </div>
+                    </div>
+
+                    <div id="results-error" class="card results-state results-error" role="alert" hidden>
+                        <h2>Optimization failed</h2>
+                        <p id="results-error-message"></p>
+                        <p class="muted">No prompt was generated. Fix the issue above and try again.</p>
+                    </div>
+
+                    <article id="results-content" class="card results-card" hidden>
+                        <div id="saved-banner" class="notice notice-info" hidden>
+                            Showing a saved session from history. No model was called.
+                        </div>
+
+                        <div class="results-head">
+                            <h2>Optimization result</h2>
+                            <span id="result-status" class="status-pill status-ok">success</span>
+                        </div>
+
+                        <div class="result-block">
+                            <h3>Optimized prompt</h3>
+                            <div id="optimized-prompt" class="result-text"></div>
+                            <div class="result-copy-row">
+                                <button type="button" id="copy-optimized" class="btn btn-secondary btn-small">
+                                    Copy prompt
+                                </button>
+                                <button type="button" id="compare-versions" class="btn btn-secondary btn-small">
+                                    Compare versions
+                                </button>
+                                <span id="copy-feedback" class="field-hint" role="status"></span>
+                            </div>
+                            <div id="compare-box" class="compare-box" hidden></div>
+                        </div>
+
+                        <div class="result-block">
+                            <h3>What changed and why</h3>
+                            <div id="result-explanation" class="result-text"></div>
+                        </div>
+
+                        <div class="result-block">
+                            <h3>Your original prompt</h3>
+                            <div id="result-original" class="result-text result-text-muted"></div>
+                        </div>
+
+                        <div class="result-copy-row">
+                            <button type="button" id="return-to-optimizer" class="btn btn-secondary btn-small">
+                                Return to optimizer
+                            </button>
+                        </div>
+                    </article>
+                </section>
+            </section>
+
+            <!-- HISTORY -->
+            <section class="page" id="page-history" data-page="history" aria-labelledby="history-heading">
+                <div class="page-header">
+                    <h1 id="history-heading">Prompt History</h1>
+                    <p class="muted">Review saved optimizations. Opening one does not call the model.</p>
+                </div>
+
+                <p id="history-message" class="notice notice-error" role="alert" hidden></p>
+
+                <div class="card history-card">
+                    <div id="history-empty" class="empty-state" hidden>
+                        <p class="empty-title">No history yet</p>
+                        <p class="muted">Completed optimizations will appear here after you run one.</p>
+                    </div>
+                    <ul id="history-list" class="history-list"></ul>
+                    <div id="history-pager" class="history-pager" hidden>
+                        <button type="button" id="history-prev" class="btn btn-secondary btn-small">Previous</button>
+                        <span id="history-page-label" class="muted"></span>
+                        <button type="button" id="history-next" class="btn btn-secondary btn-small">Next</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ROLES -->
+            <section class="page" id="page-roles" data-page="roles" aria-labelledby="roles-heading">
+                <div class="page-header">
+                    <h1 id="roles-heading">Roles</h1>
+                    <p class="muted">Each role provides its own set of tasks and optimization rules.</p>
+                </div>
+
+                <article class="card role-detail">
+                    <h2>Data Analyst</h2>
+                    <p class="muted">Turns raw data into clean, analyzable, and reportable insight.</p>
+                    <ul class="task-list">
+                        <li>Data Cleaning</li>
+                        <li>Exploratory Data Analysis</li>
+                        <li>SQL Query Generation</li>
+                        <li>Data Visualization</li>
+                        <li>Statistical Analysis</li>
+                        <li>Business Intelligence</li>
+                        <li>Predictive Analytics</li>
+                        <li>Data Reporting</li>
+                    </ul>
+                </article>
+
+                <article class="card role-detail">
+                    <h2>Software Developer</h2>
+                    <p class="muted">Builds, debugs, and documents software across the stack.</p>
+                    <ul class="task-list">
+                        <li>Frontend Development</li>
+                        <li>Backend Development</li>
+                        <li>Full-Stack Development</li>
+                        <li>Debugging</li>
+                        <li>Code Optimization</li>
+                        <li>Software Architecture</li>
+                        <li>API Development</li>
+                        <li>Testing and Documentation</li>
+                    </ul>
+                </article>
+            </section>
+
+            <!-- MODELS -->
+            <section class="page" id="page-models" data-page="models" aria-labelledby="models-heading">
+                <div class="page-header">
+                    <h1 id="models-heading">Models</h1>
+                    <p class="muted">Providers Tensor can use. Keys stay in backend/.env and are never shown here.</p>
+                </div>
+
+                <p id="models-message" class="notice notice-error" role="alert" hidden></p>
+
+                <div id="models-list" class="models-grid"></div>
+            </section>
+
+            <!-- SETTINGS -->
+            <section class="page" id="page-settings" data-page="settings" aria-labelledby="settings-heading">
+                <div class="page-header">
+                    <h1 id="settings-heading">Settings</h1>
+                    <p class="muted">Application preferences.</p>
+                </div>
+                <div class="card placeholder-card">
+                    <h2>Settings coming later</h2>
+                    <p class="muted">
+                        Preferences such as default optimization level will be added in a later iteration.
+                        API keys are never stored in the frontend.
+                    </p>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="site-footer">
+            <p>Tensor</p>
+        </footer>
+    </div>
+</div>
+
+<script src="/frontend/js/navigation.js"></script>
+<script src="/frontend/js/roles.js"></script>
+<script src="/frontend/js/state.js"></script>
+<script src="/frontend/js/api.js"></script>
+<script src="/frontend/js/results.js"></script>
+<script src="/frontend/js/optimizer.js"></script>
+<script src="/frontend/js/history.js"></script>
+<script src="/frontend/js/models.js"></script>
+<script src="/frontend/js/app.js"></script>
+</body>
+</html> 

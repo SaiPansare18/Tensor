@@ -1,0 +1,270 @@
+/* ==========================================================================
+   RolePrompt AI: Result panel styles (Iterations 4 to 6)
+   Loading, error, success and evaluation states below the optimizer form.
+   Loads after optimizer.css and before responsive.css.
+   ========================================================================== */
+
+.results-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    scroll-margin-top: calc(var(--topbar-height) + 1rem);
+}
+
+/* Shared style for the loading and error cards */
+.results-state {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.results-state p {
+    margin: 0;
+}
+
+.results-state h2 {
+    margin: 0 0 0.25rem;
+}
+
+/* Error card: dark left bar, no red, to stay within the palette */
+.results-error {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    border-left: 4px solid var(--color-text);
+}
+
+.results-error h2 {
+    color: var(--color-text);
+}
+
+.results-error p {
+    color: var(--color-text);
+}
+
+.clarification-list {
+    margin: 0.5rem 0 0;
+    padding-left: 1.25rem;
+    color: var(--color-text);
+}
+
+.clarification-list li {
+    margin-bottom: 0.4rem;
+}
+
+/* Lime spinner, reusing the keyframes defined in components.css */
+.spinner-lg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-accent-dark);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: rp-spin 0.7s linear infinite;
+}
+
+/* Success card */
+.results-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.results-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.results-head h2 {
+    margin: 0;
+}
+
+.result-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.result-block h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+/* Text from the backend keeps its line breaks */
+.result-text {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.result-text-muted {
+    color: var(--color-text-muted);
+}
+
+.result-copy-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.result-copy-row .btn {
+    align-self: flex-start;
+}
+
+/* ---------- Evaluation section (Iteration 6) ---------- */
+
+.evaluation-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+}
+
+.evaluation-section h3 {
+    margin: 0.5rem 0 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.evaluation-section .muted {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.score-summary {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.score-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.score-caveat {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+}
+
+.criteria-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.criterion-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.criterion-bar {
+    height: 8px;
+    border-radius: 999px;
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+.criterion-fill {
+    height: 100%;
+    background-color: var(--color-accent-dark);
+    border-radius: 999px;
+}
+
+.criterion-notes,
+.plain-bullets {
+    margin: 0.35rem 0 0;
+    padding-left: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.plain-bullets {
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.plain-bullets li,
+.criterion-notes li {
+    margin-bottom: 0.3rem;
+}
+
+.version-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.version-item {
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-card);
+}
+
+.version-item summary {
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.version-item .result-text {
+    margin-top: 0.6rem;
+}
+
+/* Assumptions list */
+.assumptions-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 0.92rem;
+}
+
+.assumptions-list li {
+    margin-bottom: 0.35rem;
+}
+
+/* Phones: full-width copy button, tighter padding */
+@media (max-width: 640px) {
+    .result-copy-row .btn {
+        width: 100%;
+    }
+
+    .result-text {
+        padding: 0.85rem;
+        max-height: 360px;
+    }
+
+    .evaluation-section {
+        padding: 1rem;
+    }
+}

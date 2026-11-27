@@ -1,0 +1,146 @@
+/* ==========================================================================
+   RolePrompt AI: Prompt optimizer page layout
+   Form sections, two-column grids, radio cards, action row and request preview.
+   Responsive collapse rules for phones live in responsive.css.
+   ========================================================================== */
+
+/* ---------- Form container ---------- */
+
+.optimizer-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+/* ---------- Form sections (fieldset is used for semantic grouping) ---------- */
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.form-section legend {
+    padding: 0;
+    margin-bottom: 0.25rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.form-field > label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.required {
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+/* ---------- Optimization level: radio cards ---------- */
+
+.radio-group {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    border-radius: var(--radius-md);
+}
+
+.radio-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-card);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.radio-card:hover {
+    background-color: var(--color-hover);
+    border-color: var(--color-accent);
+}
+
+/* Selected card: uses :has(), supported in current Safari, Chrome and Firefox */
+.radio-card:has(input:checked) {
+    background-color: var(--color-hover);
+    border-color: var(--color-accent-dark);
+}
+
+.radio-card input {
+    margin: 0 0 0.25rem;
+    accent-color: var(--color-accent-dark);
+    cursor: pointer;
+}
+
+.radio-title {
+    font-weight: 600;
+}
+
+.radio-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+}
+
+.radio-group.is-invalid .radio-card {
+    border-color: var(--color-text);
+}
+
+/* ---------- Request preview (shows the payload that will be sent later) ---------- */
+
+.payload-preview {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+}
+
+.payload-preview summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+
+.payload-preview pre {
+    margin: 0.75rem 0 0;
+    max-height: 260px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    color: var(--color-text);
+}
+
+/* ---------- Action row ---------- */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+}
